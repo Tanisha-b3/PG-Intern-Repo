@@ -93,11 +93,11 @@ Hi username! You've successfully authenticated.
 ssh user@host
 ```
 
-Example:
-
+### Example:        
+```bash
 ssh ubuntu@192.168.1.10
 ssh root@yourserver.com
-
+```
 
 If success, you’ll see:
 
