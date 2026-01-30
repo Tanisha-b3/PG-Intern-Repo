@@ -1,4 +1,4 @@
-# 🚀 Day 2 – VS Code Setup Like a Pro
+# Day 2 – VS Code Setup Like a Pro
 
 A complete, practical guide to mastering VS Code for real-world development.
 
@@ -102,7 +102,7 @@ A complete, practical guide to mastering VS Code for real-world development.
   }
 }
 ```
-## Why Source Maps?
+### Why Source Maps?
 
 ### Debug TypeScript directly
 
@@ -131,7 +131,7 @@ Code Spell Checker
 
 IntelliCode
 
-## Top 15 VS Code Shortcuts (Cheat Sheet)
+### Top 15 VS Code Shortcuts (Cheat Sheet)
 
 Command Palette — Ctrl + Shift + P
 
