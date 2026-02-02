@@ -1,4 +1,4 @@
-# Day 3 — Git Fundamentals (Must for Teams)
+# Day 3 — Git Fundamentals 
 
 Git is the backbone of modern team-based software development.  
 This day focuses on **real-world Git usage**, collaboration workflows, and
