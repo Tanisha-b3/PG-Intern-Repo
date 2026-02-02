@@ -106,11 +106,11 @@ Applies a specific commit from another branch.
 ```bash
 git cherry-pick <commit-hash>
 ```
-Use case:
+## Use case:
 
-Hotfix from another branch
+- Hotfix from another branch
 
-Selective feature inclusion
+- Selective feature inclusion
 
 ## 7. Merge Conflict Resolution
 - Conflicts occur when:
@@ -118,7 +118,7 @@ Selective feature inclusion
 - Git cannot auto-merge
 
 ### 7.1 Conflict Markers
-Your changes
+- Your changes
 ## 7.2 Steps to Resolve Conflict
 - Open conflicted file
 
@@ -136,31 +136,31 @@ git commit -m "fix: resolve merge conflict"
 ```
 ## 8. Commit Message Discipline
 ### 8.1 Why Good Commit Messages Matter
-Easy debugging
+- Easy debugging
 
-Better reviews
+- Better reviews
 
-Clean project history
+- Clean project history
 
 ### 8.2 Standard Commit Format
-type(scope): short description
-Types:
+- type(scope): short description
+- Types:
 
-feat – new feature
+- feat – new feature
 
-fix – bug fix
+- fix – bug fix
 
-refactor – code improvement
+- refactor – code improvement
 
-docs – documentation
+- docs – documentation
 
-chore – tooling/config
+- chore – tooling/config
 
 Examples:
 
-feat(auth): add JWT login
-fix(ui): resolve button overlap
-refactor(api): optimize error handling
+- feat(auth): add JWT login
+- fix(ui): resolve button overlap
+- refactor(api): optimize error handling
 ## 9. Pull Request (PR) Workflow
 ### 9.1 Standard Team Workflow
 - Create feature branch
