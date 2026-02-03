@@ -1,4 +1,4 @@
-# Day 5 — Chrome DevTools + Debugging Basics 🧠🛠️
+# Day 5 — Chrome DevTools + Debugging Basics
 
 ---
 
