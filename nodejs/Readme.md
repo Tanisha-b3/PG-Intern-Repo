@@ -251,31 +251,34 @@ Reason
 - State update logic ❌ incomplete
 
 ## 1️⃣6️⃣ Redux updateOrder Issue
+
+```bash
 updateOrder(state, action) {
   state.orders = state.orders.map(...)
 }
 
+```
 Problem
 
-If _id is missing → nothing updates
+- If _id is missing → nothing updates
 
-If partial object is passed → old fields remain
+- If partial object is passed → old fields remain
 
-Why refresh works
+### Why refresh works
 
-Backend sends the full updated order
+- Backend sends the full updated order
 
-Redux state gets replaced correctly
+- Redux state gets replaced correctly
 
 ## 1️⃣7️⃣ NestJS Swagger Error (Summary)
-What happened
+### What happened
 
-Swagger v11 requires NestJS v11
+- Swagger v11 requires NestJS v11
 
-Project was using NestJS v10
+- Project was using NestJS v10
 
-Rule
+### Rule
 
-All NestJS packages must share the same major version
+- All NestJS packages must share the same major version
 
-Mixing versions causes runtime and build errors.
+- Mixing versions causes runtime and build errors.
