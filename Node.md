@@ -113,6 +113,7 @@ Format:
 
 MAJOR.MINOR.PATCH
 Examples:
+```bash
 
 1.0.0 → Initial release
 
@@ -125,8 +126,8 @@ Version ranges:
 ^1.2.0 → Minor updates allowed
 
 ~1.2.0 → Patch updates only
-
-2.4 Node Version Management (NVM)
+```
+### 2.4 Node Version Management (NVM)
 NVM allows switching Node versions per project.
 
 Common commands:
@@ -135,8 +136,9 @@ nvm install 20
 nvm use 20
 node -v
 .nvmrc file:
-```
+
 20
+```
 Benefits:
 
 Consistent runtime across teams
@@ -144,6 +146,8 @@ Consistent runtime across teams
 Avoids “works on my machine” issues
 
 ## 3. Project Structure (Production-Ready)
+
+```bash
 node-ts-starter/
 │
 ├── src/
@@ -163,8 +167,10 @@ node-ts-starter/
 ├── package.json
 ├── .nvmrc
 └── README.md
-4. Config Layer (Env Validation)
+```
+## 4. Config Layer (Env Validation)
 src/config/env.ts
+```bash
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -173,6 +179,7 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+```
 Purpose:
 
 Fail fast on invalid config
@@ -180,12 +187,14 @@ Fail fast on invalid config
 Type-safe environment access
 
 ## 5. Logger Setup
+```bash
 src/logger/logger.ts
 import pino from "pino";
 
 export const logger = pino({
   level: process.env.NODE_ENV === "production" ? "info" : "debug",
 });
+```
 Why use a logger?
 
 Structured logs
@@ -208,6 +217,7 @@ Reduces code review noise
 Both together ensure clean, readable codebases.
 
 ## 7. TypeScript Configuration
+```bash
 tsconfig.json (core settings)
 {
   "compilerOptions": {
@@ -217,6 +227,7 @@ tsconfig.json (core settings)
     "strict": true
   }
 }
+```
 Benefits:
 
 Type safety
@@ -226,6 +237,7 @@ Better IDE support
 Fewer runtime bugs
 
 ## 8. Deliverable Summary
+```bash
 ✔ Node.js runtime understanding
 ✔ Module systems (CJS vs ESM)
 ✔ Environment configuration & validation
@@ -233,5 +245,5 @@ Fewer runtime bugs
 ✔ Semantic versioning
 ✔ NVM usage
 ✔ Clean Node.js + TypeScript project structure
-
+```
 This setup mirrors real production Node.js projects used in startups and enterprises.
