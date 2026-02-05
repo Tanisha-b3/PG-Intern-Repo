@@ -109,11 +109,11 @@ Used to prevent duplicate execution of POST requests.
 - Use nouns, not verbs
 - Use plural resource names
 - Represent relationships hierarchically
-
+```json
 /api/v1/users
 /api/v1/users/{id}
 /api/v1/users/{id}/orders
-
+```
 
 ---
 
