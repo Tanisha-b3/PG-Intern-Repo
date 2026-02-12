@@ -1,8 +1,4 @@
-TypeScript Fundamentals (Deep Dive – 3000+ Words)
 
-Tanisha, since you're targeting Full Stack / Frontend roles and already working on MERN projects like your Video Streaming Platform and Contest Tracker, mastering TypeScript will significantly increase your code quality, confidence, and interview performance.
-
-This guide is written with real-world developer mindset + interview readiness.
 
 1️⃣ Why TypeScript?
 
