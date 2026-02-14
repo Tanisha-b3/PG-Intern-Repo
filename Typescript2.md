@@ -1,240 +1,241 @@
-Type Assertions (as) vs Type Casting
+# Advanced TypeScript Notes (Assertions to Project Structure)
 
-Type assertion tells TypeScript:
+## 16️⃣ Type Assertions (as) vs Type Casting
 
-“Trust me, I know the type.”
+Type assertion tells TypeScript: "Trust me, I know the type."
 
+``` ts
 const input = document.getElementById("name") as HTMLInputElement;
 input.value = "Tanisha";
-
+```
 
 ⚠️ Dangerous if used incorrectly:
 
+``` ts
 const user = {} as User; // Compiles but runtime error possible
+```
 
+### Best Practices
 
-Best Practice:
+-   Avoid excessive `as`
+-   Prefer proper typing or type guards
+-   Use mainly for:
+    -   DOM elements
+    -   Third-party libraries
+    -   Unknown data parsing
 
-Avoid excessive as
+------------------------------------------------------------------------
 
-Prefer proper typing or guards
+## 17️⃣ Optional & Readonly Properties
 
-Use when:
+### Optional Properties (?)
 
-DOM elements
-
-Third-party libraries
-
-Unknown data parsing
-
-17️⃣ Optional & Readonly Properties
-Optional Properties (?)
+``` ts
 interface User {
   id: string;
   name: string;
   age?: number; // optional
 }
-
+```
 
 Usage:
 
+``` ts
 const user: User = {
   id: "1",
   name: "Tanisha"
 };
+```
 
+Useful in: - API responses - Update DTOs - Partial forms
 
-Very useful in:
+### Readonly Properties
 
-API responses
-
-Update DTOs
-
-Partial forms
-
-Readonly Properties
+``` ts
 interface Video {
   readonly id: string;
   title: string;
 }
-
+```
 
 Now:
 
-video.id = "2"; ❌ Error
+``` ts
+video.id = "2"; // ❌ Error
+```
 
+Best for: - IDs - Immutable state - Database models
 
-Best for:
+------------------------------------------------------------------------
 
-IDs
-
-Immutable state
-
-Database models
-
-18️⃣ Tuple Types (Fixed-Length Arrays)
+## 18️⃣ Tuple Types (Fixed-Length Arrays)
 
 Tuple = array with fixed types & order.
 
+``` ts
 let user: [string, number];
 user = ["Tanisha", 22]; // ✅
-
+```
 
 Wrong:
 
-user = [22, "Tanisha"]; ❌
+``` ts
+user = [22, "Tanisha"]; // ❌
+```
 
+Real-world use: - API responses `[data, error]` - React hooks return
+values
 
-Real-world use:
-
-API responses [data, error]
-
-React hooks return values
-
+``` ts
 const [loading, error]: [boolean, string | null] = [false, null];
+```
 
-19️⃣ Literal Types (Advanced Type Safety)
+------------------------------------------------------------------------
+
+## 19️⃣ Literal Types (Advanced Type Safety)
 
 Literal types restrict exact values.
 
+``` ts
 type Theme = "light" | "dark";
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+```
 
+Example:
 
-In your dashboard (dark/light mode):
-
+``` ts
 function setTheme(theme: Theme) {}
+```
 
+Passing `"blue"` → ❌ Compile error
 
-Passing "blue" → ❌ Compile error
+Prevents UI bugs in dashboards and themes.
 
-This prevents UI bugs.
+------------------------------------------------------------------------
 
-20️⃣ Type Inference (How TS Automatically Detects Types)
+## 20️⃣ Type Inference
 
-TypeScript automatically infers types.
+TypeScript automatically detects types.
 
-let name = "Tanisha"; // inferred as string
-let age = 22; // inferred as number
+``` ts
+let name = "Tanisha"; // string
+let age = 22; // number
+```
 
+Problem:
 
-But problem:
-
+``` ts
 let data; // inferred as any ❌
+```
 
+Best Practice: - Let TS infer simple types - Explicitly type complex
+variables
 
-Best Practice:
+------------------------------------------------------------------------
 
-Let TS infer simple types
+## 21️⃣ Modules & Export/Import (Very Important)
 
-Explicitly type complex variables
+### Named Export
 
-21️⃣ Modules & Export/Import (Very Important)
-Named Export
+``` ts
 // user.ts
 export interface User {
   id: string;
 }
-
+```
 
 Import:
 
+``` ts
 import { User } from "./user";
+```
 
-Default Export
+### Default Export
+
+``` ts
 export default function login() {}
-
+```
 
 Import:
 
+``` ts
 import login from "./login";
+```
 
+MERN Best Practice: - DTOs → /types - Models → /models - Services →
+/services
 
-In large MERN apps:
+------------------------------------------------------------------------
 
-DTOs in /types
+## 22️⃣ Namespaces (Interview Topic)
 
-Models in /models
-
-Services in /services
-
-22️⃣ Namespaces (Rare but Asked in Interviews)
-
-Used to group related code.
-
+``` ts
 namespace Auth {
   export function login() {}
   export function logout() {}
 }
 
 Auth.login();
+```
 
+Modern practice: ➡️ Prefer ES Modules over namespaces.
 
-Modern practice:
-➡️ Prefer ES Modules instead of namespaces.
+------------------------------------------------------------------------
 
-23️⃣ Decorators (VERY Important for NestJS – You saw @ApiProperty)
+## 23️⃣ Decorators (Important for NestJS)
 
-Since you asked earlier about:
-@ApiProperty, @IsEmail
+Example:
 
-These are decorators.
-
+``` ts
 class User {
   @IsEmail()
   email: string;
 }
+```
 
-
-Decorators are used in:
-
-NestJS
-
-Angular
-
-Validation libraries
-
-Dependency Injection
+Used in: - NestJS - Angular - Validation libraries - Dependency
+Injection
 
 Enable in tsconfig:
 
+``` json
 "experimentalDecorators": true
+```
 
-24️⃣ Advanced Generics (Real Enterprise Level)
-Multiple Generics
+------------------------------------------------------------------------
+
+## 24️⃣ Advanced Generics (Enterprise Level)
+
+### Multiple Generics
+
+``` ts
 function pair<K, V>(key: K, value: V): [K, V] {
   return [key, value];
 }
-
+```
 
 Usage:
 
+``` ts
 pair<string, number>("id", 101);
+```
 
-Generic Repository Pattern (Backend)
+### Generic Repository Pattern
 
-Very useful for your streaming backend:
-
+``` ts
 interface Repository<T> {
   findById(id: string): Promise<T>;
   create(data: T): Promise<T>;
 }
+```
 
+Reusable for: - Users - Videos - Comments - Playlists
 
-Reusable for:
+------------------------------------------------------------------------
 
-Users
+## 25️⃣ Mapped Types (Powerful)
 
-Videos
-
-Comments
-
-Playlists
-
-25️⃣ Mapped Types (Advanced & Powerful)
-
-Transforms existing types.
-
+``` ts
 type User = {
   name: string;
   email: string;
@@ -243,68 +244,76 @@ type User = {
 type ReadonlyUser = {
   readonly [K in keyof User]: User[K];
 };
+```
 
+Built-in mapped types: - Partial`<T>`{=html} - Required`<T>`{=html} -
+Readonly`<T>`{=html}
 
-Built-in mapped types:
+------------------------------------------------------------------------
 
-Partial<T>
+## 26️⃣ keyof & typeof (Interview Favorite)
 
-Required<T>
+### keyof
 
-Readonly<T>
-
-26️⃣ keyof & typeof (Interview Favorite)
-keyof
-
-Gets keys of a type.
-
+``` ts
 type User = {
   name: string;
   email: string;
 };
 
-type UserKeys = keyof User; 
+type UserKeys = keyof User;
 // "name" | "email"
+```
 
-typeof (Type Extraction)
+### typeof (Type Extraction)
+
+``` ts
 const config = {
   apiUrl: "localhost"
 };
 
 type ConfigType = typeof config;
+```
 
+Useful in config-driven applications.
 
-Very useful in config-driven apps.
+------------------------------------------------------------------------
 
-27️⃣ Record Utility Type (Clean Object Typing)
+## 27️⃣ Record Utility Type
+
+``` ts
 type Roles = "admin" | "user";
 
 const permissions: Record<Roles, string[]> = {
   admin: ["create", "delete"],
   user: ["read"]
 };
+```
 
+Cleaner than:
 
-Better than:
-
+``` ts
 { [key: string]: string[] }
+```
 
-28️⃣ Async/Await with TypeScript (Backend Must-Know)
+------------------------------------------------------------------------
+
+## 28️⃣ Async/Await with TypeScript
+
+``` ts
 async function getUsers(): Promise<User[]> {
   const res = await fetch("/api/users");
   return res.json();
 }
+```
 
+Always type: - Promise responses - API calls - Database queries
 
-Always type:
+------------------------------------------------------------------------
 
-Promise responses
+## 29️⃣ Error Handling with Proper Types
 
-API calls
-
-Database queries (Mongoose/Prisma)
-
-29️⃣ Error Handling with Proper Types
+``` ts
 try {
   // code
 } catch (error: unknown) {
@@ -312,32 +321,27 @@ try {
     console.log(error.message);
   }
 }
+```
 
+Best Practice: ✔ Use `unknown` instead of `any` in catch blocks
 
-Best practice:
-✔ Use unknown instead of any in catch
+------------------------------------------------------------------------
 
-30️⃣ Project Folder Type Structure (Real MERN Best Practice)
+## 30️⃣ Project Folder Type Structure (MERN Best Practice)
 
-For your Video Streaming Platform, ideal TS structure:
+Ideal TypeScript structure for a Video Streaming Platform:
 
-src/
- ├── types/
- │    ├── user.types.ts
- │    ├── video.types.ts
- │    └── api.types.ts
- ├── dto/
- │    ├── createVideo.dto.ts
- │    └── updateUser.dto.ts
- ├── interfaces/
- ├── services/
- ├── controllers/
+    src/
+     ├── types/
+     │    ├── user.types.ts
+     │    ├── video.types.ts
+     │    └── api.types.ts
+     ├── dto/
+     │    ├── createVideo.dto.ts
+     │    └── updateUser.dto.ts
+     ├── interfaces/
+     ├── services/
+     ├── controllers/
 
-
-This gives:
-
-Scalable architecture
-
-Clean codebase
-
-Easy refactoring (very important in large apps)
+Benefits: - Scalable architecture - Clean codebase - Easy refactoring -
+Enterprise-level maintainability
