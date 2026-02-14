@@ -1,44 +1,37 @@
-# Week 5 — SQL + PostgreSQL Deep (PSQL)
+# Week 5 --- SQL + PostgreSQL Deep (PSQL)
 
-Goal:
+## Goal
 
-Write real-world production-level queries
+-   Write real-world production-level queries
+-   Design relational tables properly
+-   Understand constraints deeply
+-   Master transactions and ACID
+-   Think like a database engineer about indexing & performance
 
-Design relational tables properly
+This module is structured like a serious backend training guide.
 
-Understand constraints deeply
+------------------------------------------------------------------------
 
-Master transactions and ACID
+## 1️⃣ Understanding SQL vs PostgreSQL (Foundation)
 
-Think like a database engineer about indexing & performance
+SQL (Structured Query Language) is the standard language used to
+communicate with relational databases.
 
-This is a deep-dive explanation structured like a serious backend training module.
+PostgreSQL is an advanced open-source relational database that
+implements SQL and adds powerful features: - JSONB support - Advanced
+indexing - Window functions - CTEs (Common Table Expressions) -
+Full-text search - MVCC concurrency model
 
-1️⃣ Understanding SQL vs PostgreSQL (Foundation)
+When you work in `psql`, you are using PostgreSQL's interactive
+terminal.
 
-SQL (Structured Query Language) is a standard language used to communicate with relational databases.
+------------------------------------------------------------------------
 
-PostgreSQL is an advanced open-source relational database system that implements SQL and adds powerful features like:
+## 2️⃣ SQL Basics --- Deep Practical Understanding
 
-JSONB support
+### Users Table Design
 
-Advanced indexing
-
-Window functions
-
-CTEs
-
-Full-text search
-
-MVCC concurrency model
-
-When you work in psql, you are using PostgreSQL’s interactive terminal.
-
-2️⃣ SQL Basics — Deep Practical Understanding
-
-Let’s design a realistic system:
-
-Users table
+``` sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -46,64 +39,77 @@ CREATE TABLE users (
     age INT CHECK (age >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
-SELECT — The Most Used Statement
-Basic selection
+### SELECT --- The Most Used Statement
+
+``` sql
 SELECT * FROM users;
+```
 
-
-⚠ In production, avoid SELECT * because:
-
-It fetches unnecessary columns
-
-It increases network cost
-
-It reduces performance clarity
+⚠ In production, avoid `SELECT *` because: - Fetches unnecessary
+columns - Increases network cost - Reduces performance clarity
 
 Better:
 
+``` sql
 SELECT id, name, email FROM users;
+```
 
-WHERE — Filtering
+### WHERE --- Filtering
+
+``` sql
 SELECT * FROM users WHERE age > 18;
-
+```
 
 Multiple conditions:
 
-SELECT * FROM users 
+``` sql
+SELECT * FROM users
 WHERE age > 18 AND created_at > '2025-01-01';
-
+```
 
 Using IN:
 
+``` sql
 SELECT * FROM users WHERE id IN (1,2,3);
-
+```
 
 Using LIKE:
 
+``` sql
 SELECT * FROM users WHERE name LIKE 'T%';
+```
 
-ORDER BY
+### ORDER BY
+
+``` sql
 SELECT * FROM users ORDER BY created_at DESC;
-
+```
 
 Multiple sorting:
 
+``` sql
 ORDER BY age DESC, name ASC;
+```
 
-LIMIT + OFFSET (Pagination)
+### LIMIT + OFFSET (Pagination)
+
+``` sql
 SELECT * FROM users
 ORDER BY id
 LIMIT 10 OFFSET 20;
-
+```
 
 Used for page-based pagination.
 
-3️⃣ Joins — The Heart of Relational Databases
+------------------------------------------------------------------------
 
-Relational databases shine because of relationships.
+## 3️⃣ Joins --- The Heart of Relational Databases
 
-Orders Table
+### Orders Table
+
+``` sql
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id),
@@ -111,142 +117,124 @@ CREATE TABLE orders (
     status VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
-INNER JOIN
+### INNER JOIN (Matching rows only)
 
-Returns matching rows only.
-
+``` sql
 SELECT u.name, o.amount
 FROM users u
 INNER JOIN orders o
 ON u.id = o.user_id;
+```
 
+### LEFT JOIN (All users, even without orders)
 
-Used when relationship must exist.
-
-LEFT JOIN
-
-Returns all users even if no orders.
-
+``` sql
 SELECT u.name, o.amount
 FROM users u
 LEFT JOIN orders o
 ON u.id = o.user_id;
+```
 
+If no order → NULL (useful in reporting).
 
-If no order → NULL.
+### Other Joins
 
-Used in reporting systems.
+-   RIGHT JOIN (less common)
+-   FULL JOIN (all records from both tables)
 
-RIGHT JOIN (Less Common)
+------------------------------------------------------------------------
 
-Returns all rows from right table.
+## 4️⃣ GROUP BY + Aggregates (Critical for Analytics)
 
-FULL JOIN
+Common aggregates: - COUNT() - SUM() - AVG() - MIN() - MAX()
 
-Returns all records from both tables.
+### Count Orders per User
 
-4️⃣ GROUP BY + Aggregates (Critical for Analytics)
-
-Aggregates:
-
-COUNT()
-
-SUM()
-
-AVG()
-
-MIN()
-
-MAX()
-
-Count Orders per User
-SELECT user_id, COUNT(*) 
+``` sql
+SELECT user_id, COUNT(*)
 FROM orders
 GROUP BY user_id;
+```
 
-Total Revenue Per User
+### Total Revenue Per User
+
+``` sql
 SELECT u.name, SUM(o.amount) AS total_spent
 FROM users u
 JOIN orders o ON u.id = o.user_id
 GROUP BY u.name;
+```
 
-Using HAVING (Filter Aggregates)
+### HAVING (Filter Aggregates)
+
+``` sql
 SELECT user_id, SUM(amount)
 FROM orders
 GROUP BY user_id
 HAVING SUM(amount) > 1000;
-
+```
 
 HAVING filters after grouping.
 
-5️⃣ Constraints — Data Integrity
+------------------------------------------------------------------------
 
-Without constraints, databases become unreliable.
+## 5️⃣ Constraints --- Data Integrity
 
-PRIMARY KEY
+### PRIMARY KEY
 
-Unique
+-   Unique
+-   Not Null
+-   Automatically indexed
 
-Not Null
+### FOREIGN KEY
 
-Automatically indexed
-
-FOREIGN KEY
+``` sql
 user_id INT REFERENCES users(id)
-
+```
 
 Enforces relational integrity.
 
-UNIQUE
-email VARCHAR(150) UNIQUE
+### UNIQUE
 
+``` sql
+email VARCHAR(150) UNIQUE
+```
 
 Prevents duplicates.
 
-CHECK
-CHECK (amount > 0)
+### CHECK
 
+``` sql
+CHECK (amount > 0)
+```
 
 Prevents invalid values.
 
-NOT NULL
+### NOT NULL
 
 Prevents empty critical data.
 
-Why Constraints Matter?
+#### Why Constraints Matter
 
-Prevent corrupted data
+-   Prevent corrupted data
+-   Enforce business rules
+-   Protect relationships
+-   Reduce application bugs
 
-Enforce business rules
+Database-level validation \> App-level validation.
 
-Protect relationships
+------------------------------------------------------------------------
 
-Reduce application bugs
+## 6️⃣ Transactions --- Deep Understanding
 
-Database-level validation > app-level validation.
+Transactions guarantee ACID: - A --- Atomicity - C --- Consistency - I
+--- Isolation - D --- Durability
 
-6️⃣ Transactions — Deep Understanding
+### Example: Order Placement
 
-Transactions guarantee ACID:
-
-A — Atomicity
-
-All or nothing.
-
-C — Consistency
-
-Database moves from valid state → valid state.
-
-I — Isolation
-
-Transactions don’t interfere incorrectly.
-
-D — Durability
-
-Committed data persists.
-
-Example: Order Placement
+``` sql
 BEGIN;
 
 INSERT INTO orders (user_id, amount)
@@ -257,158 +245,158 @@ SET balance = balance - 500
 WHERE id = 1;
 
 COMMIT;
-
+```
 
 If something fails:
 
+``` sql
 ROLLBACK;
+```
 
-Isolation Levels in PostgreSQL
+### Isolation Levels in PostgreSQL
 
-Read Committed (default)
+-   Read Committed (default)
+-   Repeatable Read
+-   Serializable
 
-Repeatable Read
+Higher isolation → More safety → Less concurrency.
 
-Serializable
+------------------------------------------------------------------------
 
-Higher isolation → more safety → less concurrency.
+## 7️⃣ Indexes --- Performance Engineering
 
-7️⃣ Indexes — Performance Engineering
+Without Index:
 
-Indexes allow faster lookups.
-
-Without Index
+``` sql
 SELECT * FROM users WHERE email = 'test@gmail.com';
+```
 
+Performs Sequential Scan.
 
-PostgreSQL does a Sequential Scan (scans entire table).
+With Index:
 
-With Index
+``` sql
 CREATE INDEX idx_users_email ON users(email);
-
+```
 
 Now PostgreSQL uses Index Scan.
 
-When to Add Index?
+### When to Add Index
 
-✔ Column used in WHERE
-✔ Column used in JOIN
-✔ Column used in ORDER BY
-✔ Column used in GROUP BY
+✔ Columns used in WHERE\
+✔ Columns used in JOIN\
+✔ Columns used in ORDER BY\
+✔ Columns used in GROUP BY
 
-When NOT to Add?
+### When NOT to Add
 
-❌ Small tables
-❌ Columns rarely searched
+❌ Small tables\
+❌ Rarely searched columns\
 ❌ Frequently updated columns
 
-Index Tradeoffs
-Operation	Effect of Index
-SELECT	Faster
-INSERT	Slower
-UPDATE	Slower
-DELETE	Slightly slower
+### Index Tradeoffs
 
-Indexes consume storage.
+  Operation   Effect of Index
+  ----------- -----------------
+  SELECT      Faster
+  INSERT      Slower
+  UPDATE      Slower
+  DELETE      Slightly slower
 
-8️⃣ Query Performance Thinking
+Indexes also consume storage.
 
-Always ask:
+------------------------------------------------------------------------
 
-How big is the table?
+## 8️⃣ Query Performance Thinking
 
-Is the column indexed?
-
-Am I using SELECT *?
-
-Am I filtering early?
-
-Am I joining unnecessarily?
-
+Always ask: - How big is the table? - Is the column indexed? - Am I
+using SELECT \*? - Am I filtering early? - Am I joining unnecessarily? -
 Can I reduce data early?
 
-EXPLAIN ANALYZE
+### EXPLAIN ANALYZE
+
+``` sql
 EXPLAIN ANALYZE
 SELECT * FROM users WHERE email = 'test@gmail.com';
+```
 
+Shows: - Seq Scan / Index Scan - Cost - Actual execution time
 
-It shows:
+------------------------------------------------------------------------
 
-Seq Scan
+## 9️⃣ Real Production Scenarios
 
-Index Scan
+### Top 5 Spending Users
 
-Cost
-
-Actual time
-
-You should learn to read query plans.
-
-9️⃣ Real Production Scenarios
-Top 5 Spending Users
+``` sql
 SELECT u.name, SUM(o.amount) AS total_spent
 FROM users u
 JOIN orders o ON u.id = o.user_id
 GROUP BY u.name
 ORDER BY total_spent DESC
 LIMIT 5;
+```
 
-Monthly Revenue
+### Monthly Revenue
+
+``` sql
 SELECT DATE_TRUNC('month', created_at) AS month,
 SUM(amount)
 FROM orders
 GROUP BY month
 ORDER BY month;
+```
 
-Users With No Orders
+### Users With No Orders
+
+``` sql
 SELECT u.*
 FROM users u
 LEFT JOIN orders o ON u.id = o.user_id
 WHERE o.id IS NULL;
+```
 
-1️⃣0️⃣ Table Design Best Practices
+------------------------------------------------------------------------
 
-✔ Use proper data types
-✔ Use constraints
-✔ Normalize (avoid duplication)
-✔ Add indexes carefully
-✔ Use foreign keys
-✔ Avoid unnecessary TEXT columns
+## 🔟 Table Design Best Practices
 
-1️⃣1️⃣ Normalization Concepts
+-   Use proper data types
+-   Use constraints
+-   Normalize (avoid duplication)
+-   Add indexes carefully
+-   Use foreign keys
+-   Avoid unnecessary TEXT columns
 
-1NF — Atomic values
-2NF — No partial dependency
-3NF — No transitive dependency
+------------------------------------------------------------------------
 
-Goal: Reduce redundancy.
+## 1️⃣1️⃣ Normalization Concepts
 
-1️⃣2️⃣ PostgreSQL-Specific Strengths
+-   1NF --- Atomic values
+-   2NF --- No partial dependency
+-   3NF --- No transitive dependency
 
-JSONB
+Goal: Reduce redundancy and improve consistency.
 
-GIN indexes
+------------------------------------------------------------------------
 
-Partial indexes
+## 1️⃣2️⃣ PostgreSQL-Specific Strengths
 
-CTEs
+-   JSONB support
+-   GIN indexes
+-   Partial indexes
+-   CTEs
+-   Window functions
+-   MVCC concurrency model
 
-Window functions
+PostgreSQL is enterprise-grade and production-ready.
 
-MVCC concurrency model
+------------------------------------------------------------------------
 
-PostgreSQL is production-ready and enterprise-grade.
+## 1️⃣3️⃣ Mental Model of a Database Engineer
 
-1️⃣3️⃣ Mental Model of Database Engineer
+Think in this order: 1. Schema first\
+2. Data integrity first\
+3. Performance second\
+4. Scale third
 
-Think like this:
-
-Schema first
-
-Data integrity first
-
-Performance second
-
-Scale third
-
-Bad schema = permanent pain.
+Bad schema = permanent pain in large systems.
