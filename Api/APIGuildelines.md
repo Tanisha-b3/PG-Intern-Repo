@@ -6,7 +6,7 @@ error handling, and pagination for production-ready backend systems
 
 ------------------------------------------------------------------------
 
-## 1️⃣ HTTP Status Codes (Standardized Usage)
+## 1️⃣ HTTP Status Codes (Standardized Usage
 
 ### 2xx --- Success
 
